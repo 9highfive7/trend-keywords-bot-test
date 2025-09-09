@@ -4,7 +4,7 @@ on:
   schedule:
     # 毎週月曜 09:00 JST（= 00:00 UTC）
     - cron: "0 0 * * 1"
-  # 手動テスト用
+  # 手動実行用
   workflow_dispatch: {}
 
 permissions:
@@ -42,8 +42,8 @@ jobs:
       - name: Run bot (fetch → analyze → Slack post → write docs)
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}   # C/Gで始まるID推奨
-          PAGES_BASE: ${{ vars.PAGES_BASE }}                  # 例: https://<username>.github.io/trend-keywords-bot
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          PAGES_BASE: ${{ vars.PAGES_BASE }}
         run: python app.py
 
       - name: Commit pages if changed
