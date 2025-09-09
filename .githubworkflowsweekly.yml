@@ -1,0 +1,24 @@
+name: Weekly Trend Keywords to Slack
+
+on:
+  schedule:
+    # GitHub ActionsはUTC。JST 09:00 = 前日24:00 UTC（= 00:00）
+    - cron: "0 0 * * 1"   # 毎週月曜 00:00 UTC = 月曜 09:00 JST
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Run bot
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          TOP_K: "10"
+          POST_LIMIT_PER_SOURCE: "5"
+        run: python app.py

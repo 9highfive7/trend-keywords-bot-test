@@ -1,0 +1,12 @@
+html:
+  - name: qiita_trend
+    url: https://qiita.com/trend
+  - name: stackoverflow_hot
+    url: https://stackexchange.com/?tab=hot
+  - name: github_trending
+    url: https://github.com/trending
+rss:
+  - name: publickey
+    url: https://www.publickey1.jp/atom.xml
+  - name: gihyo
+    url: https://gihyo.jp/feed/atom

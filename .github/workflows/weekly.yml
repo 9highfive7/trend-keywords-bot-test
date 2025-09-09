@@ -1,0 +1,55 @@
+name: Weekly Trend to Slack
+
+on:
+  schedule:
+    # 毎週月曜 09:00 JST（= 00:00 UTC）
+    - cron: "0 0 * * 1"
+  # 手動テスト用
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # docs/*.md をコミットするため
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Ensure docs dir exists
+        run: mkdir -p docs
+
+      - name: Run bot (fetch → analyze → Slack post → write docs)
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}   # C/Gで始まるID推奨
+          PAGES_BASE: ${{ vars.PAGES_BASE }}                  # 例: https://<username>.github.io/trend-keywords-bot
+        run: python app.py
+
+      - name: Commit pages if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/*.md || true
+          git diff --cached --quiet || git commit -m "update pages"
+          git push

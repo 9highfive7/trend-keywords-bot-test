@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+lxml
+PyYAML
+slack_sdk
+python-dotenv
