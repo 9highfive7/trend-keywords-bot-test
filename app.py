@@ -183,7 +183,7 @@ def save_markdown(top_list, related_map, date_label):
     base = ["# 週次アーカイブ", ""]
     if idx.exists():
         base = idx.read_text(encoding="utf-8").splitlines()
-    rel = f"- [{date_label}](./{date_label}.md)"
+    rel = f"- [{date_label}](./{date_label}.html)"
     if rel not in base:
         base.insert(2, rel)
     idx.write_text("\n".join(base), encoding="utf-8")
@@ -309,7 +309,7 @@ def main():
 
     # Markdown保存（Pages）
     save_markdown(top_list, related_map, date_label)
-    page_url = f"{PAGES_BASE}/{date_label}.md"  # テーマにより .md のまま表示可能
+    page_url = f"{PAGES_BASE}/{date_label}.html"  # テーマにより .md のまま表示可能
 
     # Slack投稿（親＋スレッド、Block Kit）
     post_to_slack(top_list, related_map, date_label, page_url)
